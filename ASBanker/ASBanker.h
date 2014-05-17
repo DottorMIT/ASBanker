@@ -6,7 +6,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <StoreKit/StoreKit.h>
+
+@import StoreKit;
 
 @protocol ASBankerDelegate <NSObject>
 @required
@@ -22,12 +23,19 @@
 
 @optional
 - (void)bankerDidRestorePurchases;
+- (void)bankerCanNotMakePurchases;
+- (void)bankerContentDownloadComplete:(SKDownload *)download;
+- (void)bankerContentDownloading:(SKDownload *)download;
+
 @end
 
 
 @interface ASBanker : NSObject <SKPaymentTransactionObserver, SKProductsRequestDelegate>
 
-@property (nonatomic, assign) UIViewController <ASBankerDelegate> *delegate;
++ (ASBanker *)sharedInstance;
+- (void)assignTransactionObserver;
+
+@property (weak, nonatomic) UIViewController <ASBankerDelegate> *delegate;
 @property (strong, nonatomic) SKProductsRequest *productsRequest;
 
 - (BOOL)canMakePurchases;

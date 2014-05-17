@@ -9,12 +9,25 @@
 
 @implementation ASBanker
 
-- (id)init {
-	self = [super init];
-	if (self != nil) {
-		[[SKPaymentQueue defaultQueue] addTransactionObserver:self];
-	}
-	return self;
+#pragma mark - Lifecycle
+
+static ASBanker *sharedInstance = nil;
+
++ (ASBanker *)sharedInstance {
+    if (nil != sharedInstance) {
+        return sharedInstance;
+    }
+    
+    static dispatch_once_t pred;
+    dispatch_once(&pred, ^{
+        sharedInstance = [[super allocWithZone:nil] init];
+    });
+    
+    return sharedInstance;
+}
+
++ (id)allocWithZone:(NSZone *)zone {
+    return [self sharedInstance];
 }
 
 - (void)dealloc {
@@ -25,6 +38,9 @@
 	[[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
 }
 
+- (void)assignTransactionObserver {
+    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
+}
 
 - (BOOL)canMakePurchases {
     return [SKPaymentQueue canMakePayments];
@@ -34,11 +50,17 @@
 	if (productIdentifiers == nil) {
         [self failedToConnect];
     } else {
-        NSSet *productIdentifiersSet = [NSSet setWithArray:productIdentifiers];
-        
-        self.productsRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:productIdentifiersSet];
-        _productsRequest.delegate = self;
-        [_productsRequest start];
+        if ([self canMakePurchases]) {
+            NSSet *productIdentifiersSet = [NSSet setWithArray:productIdentifiers];
+            
+            self.productsRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:productIdentifiersSet];
+            self.productsRequest.delegate = self;
+            [self.productsRequest start];
+        } else {
+            if ([self.delegate respondsToSelector:@selector(bankerCanNotMakePurchases)]) {
+                [self.delegate performSelector:@selector(bankerCanNotMakePurchases)];
+            }
+        }
     }
 }
 
@@ -64,19 +86,19 @@
 
 - (void)failedToConnect {
 	if ([self.delegate respondsToSelector:@selector(bankerFailedToConnect)]) {
-		[_delegate performSelector:@selector(bankerFailedToConnect)];
+		[self.delegate performSelector:@selector(bankerFailedToConnect)];
 	}
 }
 
 - (void)noProductsFound {
-	if ([self.delegate respondsToSelector:@selector(abankerNoProductsFound)]) {
-		[_delegate performSelector:@selector(bankerNoProductsFound)];
+	if ([self.delegate respondsToSelector:@selector(bankerNoProductsFound)]) {
+		[self.delegate performSelector:@selector(bankerNoProductsFound)];
 	}
 }
 
 - (void)foundProducts:(NSArray *)products {
 	if ([self.delegate respondsToSelector:@selector(bankerFoundProducts:)]) {
-		[_delegate performSelector:@selector(bankerFoundProducts:) withObject:products];
+		[self.delegate performSelector:@selector(bankerFoundProducts:) withObject:products];
 	}
 }
 
@@ -100,13 +122,16 @@
 }
 
 - (void)recordTransaction:(SKPaymentTransaction *)transaction {
-	[[NSUserDefaults standardUserDefaults] setValue:transaction.transactionReceipt forKey:transaction.payment.productIdentifier];
+    NSData *transactionReceipt = [NSData dataWithContentsOfURL:[[NSBundle mainBundle] appStoreReceiptURL]];
+    NSString *transactionReceiptString = [[NSString alloc] initWithData:transactionReceipt encoding:NSASCIIStringEncoding];
+    
+	[[NSUserDefaults standardUserDefaults] setValue:transactionReceiptString forKey:transaction.payment.productIdentifier];
 	[[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)provideContent:(SKPaymentTransaction *)paymentTransaction {
     if ([self.delegate respondsToSelector:@selector(bankerProvideContent:)]) {
-        [_delegate performSelector:@selector(bankerProvideContent:) withObject:paymentTransaction];
+        [self.delegate performSelector:@selector(bankerProvideContent:) withObject:paymentTransaction];
 	}
 }
 
@@ -114,10 +139,36 @@
     [self recordTransaction:transaction];
     [self provideContent:transaction];
     [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
-	
+    
     if ([self.delegate respondsToSelector:@selector(bankerPurchaseComplete:)]) {
-		[_delegate performSelector:@selector(bankerPurchaseComplete:) withObject:transaction];
-	}
+        [self.delegate performSelector:@selector(bankerPurchaseComplete:) withObject:transaction];
+    }
+}
+
+- (void)paymentQueue:(SKPaymentQueue *)queue updatedDownloads:(NSArray *)downloads {
+    for (SKDownload *download in downloads) {
+        switch (download.downloadState) {
+            case SKDownloadStateActive:
+                if ([self.delegate respondsToSelector:@selector(bankerContentDownloading:)]) {
+                    [self.delegate performSelector:@selector(bankerContentDownloading:) withObject:download];
+                }
+                
+                break;
+            case SKDownloadStateFinished:
+                // Download is complete. Content file URL is at
+                // path referenced by download.contentURL. Move
+                // it somewhere safe, unpack it and give the user
+                // access to it
+                if ([self.delegate respondsToSelector:@selector(bankerContentDownloadComplete:)]) {
+                    [self.delegate performSelector:@selector(bankerContentDownloadComplete:) withObject:download];
+                }
+                
+                [self completeTransaction:download.transaction];
+                break;
+            default:
+                break;
+        }
+    }
 }
 
 - (void)restoreTransaction:(SKPaymentTransaction *)transaction {
@@ -126,18 +177,18 @@
     [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
     
     if ([self.delegate respondsToSelector:@selector(bankerPurchaseComplete:)]) {
-		[_delegate performSelector:@selector(bankerPurchaseComplete:) withObject:transaction.originalTransaction];
+		[self.delegate performSelector:@selector(bankerPurchaseComplete:) withObject:transaction.originalTransaction];
 	}
 }
 
 - (void)failedTransaction:(SKPaymentTransaction *)transaction {
 	if (transaction.error.code != SKErrorPaymentCancelled) {
 		if ([self.delegate respondsToSelector:@selector(bankerPurchaseFailed: withError:)]) {
-			[_delegate performSelector:@selector(bankerPurchaseFailed: withError:) withObject:transaction.payment.productIdentifier withObject:[transaction.error localizedDescription]];
+			[self.delegate performSelector:@selector(bankerPurchaseFailed: withError:) withObject:transaction.payment.productIdentifier withObject:[transaction.error localizedDescription]];
 		}
     } else {
 		if ([self.delegate respondsToSelector:@selector(bankerPurchaseCancelledByUser:)]) {
-			[_delegate performSelector:@selector(bankerPurchaseCancelledByUser:) withObject:transaction.payment.productIdentifier];
+			[self.delegate performSelector:@selector(bankerPurchaseCancelledByUser:) withObject:transaction.payment.productIdentifier];
 		}
 	}
 	
@@ -151,7 +202,11 @@
                 break;
 				
             case SKPaymentTransactionStatePurchased:
-                [self completeTransaction:transaction];
+                if (transaction.downloads) {
+                    [[SKPaymentQueue defaultQueue] startDownloads:transaction.downloads];
+                } else {
+                    [self completeTransaction:transaction];
+                }
                 break;
 				
             case SKPaymentTransactionStateFailed:
@@ -170,13 +225,13 @@
 
 - (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue {
     if ([self.delegate respondsToSelector:@selector(bankerDidRestorePurchases)]) {
-		[_delegate performSelector:@selector(bankerDidRestorePurchases)];
+		[self.delegate performSelector:@selector(bankerDidRestorePurchases)];
 	}
 }
 
 - (void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error {
     if ([self.delegate respondsToSelector:@selector(bankerFailedRestorePurchases)]) {
-		[_delegate performSelector:@selector(bankerFailedRestorePurchases)];
+		[self.delegate performSelector:@selector(bankerFailedRestorePurchases)];
 	}
 }
 

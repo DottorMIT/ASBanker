@@ -1,28 +1,17 @@
 //
 //  Constants.h
-//  Fitness Plus
+//  Sample Project
 //
-//  Created by Ross Gibson on 28/04/2014.
+//  Created by Ross Gibson on 17/05/2014.
 //  Copyright (c) 2014 Awarai Studios Limited. All rights reserved.
 //
 
-#pragma mark - Plist Keys
+#pragma mark - In App Purchase Products
 
-extern NSString *const kVersionNumberKey;
-extern NSString *const kBuildNumberKey;
-extern NSString *const kTestFlightAppToken;
-extern NSString *const kFlurryAppKey;
-extern NSString *const kMixpanelToken;
+extern NSString *const kInAppPurchseBasicGymPack;
+extern NSString *const kInAppPurchseProGymPack;
+extern NSString *const kInAppPurchseMembership;
 
-#pragma mark - NSUserDefaults
+#pragma mark - Table View Cell Identifiers
 
-extern NSString *const kUserDefaultsVersionNumber;
-extern NSString *const kUserDefaultsBuildNumber;
-
-#pragma mark - Analytics
-
-extern NSString *const kEventAppLaunched;
-
-#pragma mark - Data Models
-
-extern NSString *const kRoutineDataModel;
+extern NSString *const kProductCellIdentifier;
