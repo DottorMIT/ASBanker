@@ -1,3 +1,0 @@
-platform :ios
-
-pod 'ASBanker',:git => "https://github.com/AwaraiStudios/ASBanker.git"

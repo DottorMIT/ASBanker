@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>75E9EEDE-447A-44EF-B34A-58D2FB57CB9A</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Sample Project</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>FA5B57C3-B050-4F1C-BC04-AF7D86A22BC8</key>
+		<string>https://github.com/AwaraiStudios/ASBanker.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Sample Project/Sample Project.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>FA5B57C3-B050-4F1C-BC04-AF7D86A22BC8</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/AwaraiStudios/ASBanker.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>FA5B57C3-B050-4F1C-BC04-AF7D86A22BC8</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>FA5B57C3-B050-4F1C-BC04-AF7D86A22BC8</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ASBanker</string>
+		</dict>
+	</array>
+</dict>
+</plist>
