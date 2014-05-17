@@ -3,12 +3,17 @@ ASBanker
 
 Simplifies adding In App Purchases to iOS applications. Create a Banker, set its delegate and pass an array of your In App Purchase products to it, easy! The Banker handles the rest including storing the transactions and handling errors. 
 
-Setup
+Preparing for In App Purchases
 -----
 
 **Important**
 
 You will need to create an In App Purchase product for your app in iTunes Connect.
+
+For a detailed tutorial on prepaing your app for In App Purchases, click [here](http://www.techotopia.com/index.php/Preparing_an_iOS_7_Application_for_In-App_Purchases) 
+
+Installation
+-----
 
 **Installing with [CocoaPods](http://cocoapods.org)**
 
@@ -34,7 +39,7 @@ If you're unfamiliar with CocoaPods there is a great tutorial [here](http://www.
 
 **Running the sample project**
 
-Check out the [sample project](https://github.com/AwaraiStudios/ASBanker/tree/master/Sample) included in the repository. Just open the '.xcworkspace' file in the Sample folder and the project should build correctly.
+Check out the [sample project](https://github.com/AwaraiStudios/ASBanker/tree/master/Sample%20Project) included in the repository. Open the '.xcodeproj' file in the Sample Project folder and the project should build correctly.
 
 Licence
 -------
