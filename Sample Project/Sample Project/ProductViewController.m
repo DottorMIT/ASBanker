@@ -19,6 +19,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *purchaseButton;
 @property (weak, nonatomic) IBOutlet UILabel *productTitle;
 @property (weak, nonatomic) IBOutlet UITextView *productDescription;
+@property (weak, nonatomic) IBOutlet UIImageView *productImage;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 
 @end
@@ -41,6 +42,7 @@
     
     self.productTitle.text = self.product.localizedTitle;
     self.productDescription.text = self.product.localizedDescription;
+    self.productImage.image = [UIImage imageNamed:@"DummyIcon"];
     [self.purchaseButton setTitle:self.product.localizedPrice forState:UIControlStateNormal];
     
     self.banker = [ASBanker sharedInstance];

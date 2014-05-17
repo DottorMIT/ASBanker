@@ -88,6 +88,8 @@
     SKProduct *product = [self.products objectAtIndex:indexPath.row];
 	
 	cell.productTitle.text = product.localizedTitle;
+    cell.productDescription.text = product.localizedDescription;
+    cell.productImage.image = [UIImage imageNamed:@"DummyIcon"];
     
 	[cell.purchaseButton setTitle:product.localizedPrice forState:UIControlStateNormal];
     
