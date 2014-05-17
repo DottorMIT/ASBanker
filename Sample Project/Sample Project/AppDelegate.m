@@ -8,15 +8,10 @@
 
 #import "AppDelegate.h"
 
-#import "ASBanker.h"
-
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    
-    //  Since the payment queue continues to process requests independently of the application (and even in the event that the application exits) it is recommended that access to the payment queue and transaction observer object assignment takes place when the application is first launched. This will ensure that the application will be notified immediately of any payment transactions that were completed after the application last exited.
-    [[ASBanker sharedInstance] assignTransactionObserver];
     
     return YES;
 }

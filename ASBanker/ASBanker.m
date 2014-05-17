@@ -21,6 +21,7 @@ static ASBanker *sharedInstance = nil;
     static dispatch_once_t pred;
     dispatch_once(&pred, ^{
         sharedInstance = [[super allocWithZone:nil] init];
+        [[SKPaymentQueue defaultQueue] addTransactionObserver:sharedInstance];
     });
     
     return sharedInstance;
@@ -35,16 +36,16 @@ static ASBanker *sharedInstance = nil;
     self.productsRequest = nil;
 	self.delegate = nil;
 	
-	[[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
+	[[SKPaymentQueue defaultQueue] removeTransactionObserver:sharedInstance];
 }
 
-- (void)assignTransactionObserver {
-    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
-}
+#pragma mark - Getters
 
 - (BOOL)canMakePurchases {
     return [SKPaymentQueue canMakePayments];
 }
+
+#pragma mark - Public
 
 - (void)fetchProducts:(NSArray *)productIdentifiers {
 	if (productIdentifiers == nil) {
@@ -64,25 +65,20 @@ static ASBanker *sharedInstance = nil;
     }
 }
 
-- (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
-    NSArray *products = response.products;
-	
-	if (products == nil || [products count] == 0) {
-		[self noProductsFound];
-	} else {
-		[self foundProducts:products];
-	}
-	
-	if (response.invalidProductIdentifiers != nil && [response.invalidProductIdentifiers count] > 0) {
-        [self foundInvalidProducts:response.invalidProductIdentifiers];
-	}
-    
-    self.productsRequest = nil;
+- (void)purchaseItem:(SKProduct *)product {
+    if (product == nil) {
+        [self noProductsFound];
+    } else {
+        SKPayment *payment = [SKPayment paymentWithProduct:product];
+        [[SKPaymentQueue defaultQueue] addPayment:payment];
+    }
 }
 
-- (void)request:(SKRequest *)request didFailWithError:(NSError *)error {
-	[self failedToConnect];
+- (void)restorePurchases {
+    [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
 }
+
+#pragma mark - Private
 
 - (void)failedToConnect {
 	if ([self.delegate respondsToSelector:@selector(bankerFailedToConnect)]) {
@@ -104,22 +100,17 @@ static ASBanker *sharedInstance = nil;
 
 - (void)foundInvalidProducts:(NSArray *)products {
 	if ([self.delegate respondsToSelector:@selector(bankerFoundInvalidProducts:)]) {
-		[_delegate performSelector:@selector(bankerFoundInvalidProducts:) withObject:products];
+		[self.delegate performSelector:@selector(bankerFoundInvalidProducts:) withObject:products];
 	}
 }
 
-- (void)purchaseItem:(SKProduct *)product {
-    if (product == nil) {
-        [self noProductsFound];
-    } else {
-        SKPayment *payment = [SKPayment paymentWithProduct:product];
-        [[SKPaymentQueue defaultQueue] addPayment:payment];
-    }
+- (void)provideContent:(SKPaymentTransaction *)paymentTransaction {
+    if ([self.delegate respondsToSelector:@selector(bankerProvideContent:)]) {
+        [self.delegate performSelector:@selector(bankerProvideContent:) withObject:paymentTransaction];
+	}
 }
 
-- (void)restorePurchases {
-    [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
-}
+#pragma mark - SKPaymentTransaction
 
 - (void)recordTransaction:(SKPaymentTransaction *)transaction {
     NSData *transactionReceipt = [NSData dataWithContentsOfURL:[[NSBundle mainBundle] appStoreReceiptURL]];
@@ -129,12 +120,6 @@ static ASBanker *sharedInstance = nil;
 	[[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (void)provideContent:(SKPaymentTransaction *)paymentTransaction {
-    if ([self.delegate respondsToSelector:@selector(bankerProvideContent:)]) {
-        [self.delegate performSelector:@selector(bankerProvideContent:) withObject:paymentTransaction];
-	}
-}
-
 - (void)completeTransaction:(SKPaymentTransaction *)transaction {
     [self recordTransaction:transaction];
     [self provideContent:transaction];
@@ -142,32 +127,6 @@ static ASBanker *sharedInstance = nil;
     
     if ([self.delegate respondsToSelector:@selector(bankerPurchaseComplete:)]) {
         [self.delegate performSelector:@selector(bankerPurchaseComplete:) withObject:transaction];
-    }
-}
-
-- (void)paymentQueue:(SKPaymentQueue *)queue updatedDownloads:(NSArray *)downloads {
-    for (SKDownload *download in downloads) {
-        switch (download.downloadState) {
-            case SKDownloadStateActive:
-                if ([self.delegate respondsToSelector:@selector(bankerContentDownloading:)]) {
-                    [self.delegate performSelector:@selector(bankerContentDownloading:) withObject:download];
-                }
-                
-                break;
-            case SKDownloadStateFinished:
-                // Download is complete. Content file URL is at
-                // path referenced by download.contentURL. Move
-                // it somewhere safe, unpack it and give the user
-                // access to it
-                if ([self.delegate respondsToSelector:@selector(bankerContentDownloadComplete:)]) {
-                    [self.delegate performSelector:@selector(bankerContentDownloadComplete:) withObject:download];
-                }
-                
-                [self completeTransaction:download.transaction];
-                break;
-            default:
-                break;
-        }
     }
 }
 
@@ -193,6 +152,56 @@ static ASBanker *sharedInstance = nil;
 	}
 	
 	[[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+}
+
+#pragma mark - SKProductsRequest
+
+- (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
+    NSArray *products = response.products;
+	
+	if (products == nil || [products count] == 0) {
+		[self noProductsFound];
+	} else {
+		[self foundProducts:products];
+	}
+	
+	if (response.invalidProductIdentifiers != nil && [response.invalidProductIdentifiers count] > 0) {
+        [self foundInvalidProducts:response.invalidProductIdentifiers];
+	}
+    
+    self.productsRequest = nil;
+}
+
+- (void)request:(SKRequest *)request didFailWithError:(NSError *)error {
+	[self failedToConnect];
+}
+
+#pragma mark - SKPaymentQueue
+
+- (void)paymentQueue:(SKPaymentQueue *)queue updatedDownloads:(NSArray *)downloads {
+    for (SKDownload *download in downloads) {
+        switch (download.downloadState) {
+            case SKDownloadStateActive:
+                if ([self.delegate respondsToSelector:@selector(bankerContentDownloading:)]) {
+                    [self.delegate performSelector:@selector(bankerContentDownloading:) withObject:download];
+                }
+                
+                break;
+            case SKDownloadStateFinished:
+                // Download is complete. Content file URL is at
+                // path referenced by download.contentURL. Move
+                // it somewhere safe, unpack it and give the user
+                // access to it
+                if ([self.delegate respondsToSelector:@selector(bankerContentDownloadComplete:)]) {
+                    [self.delegate performSelector:@selector(bankerContentDownloadComplete:) withObject:download];
+                }
+                
+                [self completeTransaction:download.transaction];
+                break;
+            default:
+                break;
+        }
+    }
 }
 
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions {

@@ -30,23 +30,20 @@
 @end
 
 
+
+
 @interface ASBanker : NSObject <SKPaymentTransactionObserver, SKProductsRequestDelegate>
 
 + (ASBanker *)sharedInstance;
-- (void)assignTransactionObserver;
 
 @property (weak, nonatomic) UIViewController <ASBankerDelegate> *delegate;
 @property (strong, nonatomic) SKProductsRequest *productsRequest;
 
-- (BOOL)canMakePurchases;
 - (void)fetchProducts:(NSArray *)productIdentifiers;
-- (void)failedToConnect;
-- (void)noProductsFound;
-- (void)foundProducts:(NSArray *)products;
-- (void)foundInvalidProducts:(NSArray *)products;
 - (void)purchaseItem:(SKProduct *)product;
 - (void)restorePurchases;
-- (void)provideContent:(SKPaymentTransaction *)paymentTransaction;
+
+- (BOOL)canMakePurchases;
 
 @end
 
