@@ -8,12 +8,18 @@
 
 #import "Constants.h"
 
-#pragma mark - In App Purchase Products
+#warning - Update the product identifiers
 
-NSString *const kInAppPurchseBasicGymPack = @"com.awarai.fitnessplus.basicgympack";
-NSString *const kInAppPurchseProGymPack = @"com.awarai.fitnessplus.progympack";
-NSString *const kInAppPurchseMembership = @"com.awarai.fitnessplus.membership";
+#pragma mark - In App Purchase Products Identifiers
+
+NSString *const kInAppPurchseIdentifierBasicGymPack = @"com.awarai.fitnessplus.basicgympack";
+NSString *const kInAppPurchseIdentifierProGymPack = @"com.awarai.fitnessplus.progympack";
+NSString *const kInAppPurchseIdentifierMembership = @"com.awarai.fitnessplus.membership";
 
 #pragma mark - Table View Cell Identifiers
 
 NSString *const kProductCellIdentifier = @"ProductCell";
+
+#pragma mark - Storyboard Segue Identifiers
+
+NSString *const kStoryboardSegueIdentifierProduct = @"Product";

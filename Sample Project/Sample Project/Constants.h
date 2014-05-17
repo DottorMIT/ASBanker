@@ -6,12 +6,16 @@
 //  Copyright (c) 2014 Awarai Studios Limited. All rights reserved.
 //
 
-#pragma mark - In App Purchase Products
+#pragma mark - In App Purchase Products Identifiers
 
-extern NSString *const kInAppPurchseBasicGymPack;
-extern NSString *const kInAppPurchseProGymPack;
-extern NSString *const kInAppPurchseMembership;
+extern NSString *const kInAppPurchseIdentifierBasicGymPack;
+extern NSString *const kInAppPurchseIdentifierProGymPack;
+extern NSString *const kInAppPurchseIdentifierMembership;
 
 #pragma mark - Table View Cell Identifiers
 
 extern NSString *const kProductCellIdentifier;
+
+#pragma mark - Storyboard Segue Identifiers
+
+extern NSString *const kStoryboardSegueIdentifierProduct;
