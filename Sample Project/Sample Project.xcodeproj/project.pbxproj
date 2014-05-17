@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F49889A21927C73A0037B8F8 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F49889A01927C73A0037B8F8 /* Localizable.strings */; };
 		F4996A2B19275EBA00E90A9A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4996A2A19275EBA00E90A9A /* Foundation.framework */; };
 		F4996A2D19275EBA00E90A9A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4996A2C19275EBA00E90A9A /* CoreGraphics.framework */; };
 		F4996A2F19275EBA00E90A9A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4996A2E19275EBA00E90A9A /* UIKit.framework */; };
@@ -42,6 +43,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F498899F1927C64D0037B8F8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
+		F49889A11927C73A0037B8F8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F49889A31927CA5E0037B8F8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F4996A2719275EBA00E90A9A /* Sample Project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Sample Project.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4996A2A19275EBA00E90A9A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		F4996A2C19275EBA00E90A9A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -158,6 +162,7 @@
 				F4996A3319275EBA00E90A9A /* InfoPlist.strings */,
 				F4996A3619275EBA00E90A9A /* main.m */,
 				F4996A3819275EBA00E90A9A /* Sample Project-Prefix.pch */,
+				F49889A01927C73A0037B8F8 /* Localizable.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -309,6 +314,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4996A4319275EBA00E90A9A /* Images.xcassets in Resources */,
+				F49889A21927C73A0037B8F8 /* Localizable.strings in Resources */,
 				F4996A3519275EBA00E90A9A /* InfoPlist.strings in Resources */,
 				F4996A3E19275EBA00E90A9A /* Main.storyboard in Resources */,
 			);
@@ -361,6 +367,15 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		F49889A01927C73A0037B8F8 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F49889A11927C73A0037B8F8 /* Base */,
+				F49889A31927CA5E0037B8F8 /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		F4996A3319275EBA00E90A9A /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -373,6 +388,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				F4996A3D19275EBA00E90A9A /* Base */,
+				F498899F1927C64D0037B8F8 /* en */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";

@@ -60,29 +60,28 @@
     [self.banker purchaseItem:self.product];
 }
 
+#pragma mark - Private
+
+- (void)somthingWentWrong {
+    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert.title.oops", @"Oops!")
+                                                 message:NSLocalizedString(@"alert.message.error-connecting-to-itunes", @"Something went wrong whilst trying to connect to the iTunes Store. Please try again.")
+                                                delegate:nil
+                                       cancelButtonTitle:NSLocalizedString(@"alert.button.ok", @"OK")
+                                       otherButtonTitles:nil];
+	[av show];
+}
+
 #pragma mark - ASBankerDelegate
 
 // Required
 
 - (void)bankerFailedToConnect {
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Oops!", @"Alert view title")
-                                                 message:NSLocalizedString(@"Something went wrong whilst trying to connect to the iTunes Store. Please try again.", @"Alert message")
-                                                delegate:nil
-                                       cancelButtonTitle:NSLocalizedString(@"OK", @"Button title")
-                                       otherButtonTitles:nil];
-	[av show];
-	
+    [self somthingWentWrong];
 	[self.activityIndicator stopAnimating];
 }
 
 - (void)bankerNoProductsFound {
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Oops!", @"Alert view title")
-                                                 message:NSLocalizedString(@"Something went wrong whilst trying to connect to the iTunes Store. Please try again.", @"Alert message")
-                                                delegate:nil
-                                       cancelButtonTitle:NSLocalizedString(@"OK", @"Button title")
-                                       otherButtonTitles:nil];
-	[av show];
-	
+    [self somthingWentWrong];
 	[self.activityIndicator stopAnimating];
 }
 
@@ -91,13 +90,7 @@
 }
 
 - (void)bankerFoundInvalidProducts:(NSArray *)products {
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Oops!", @"Alert view title")
-                                                 message:NSLocalizedString(@"Something went wrong whilst trying to connect to the iTunes Store. Please try again.", @"Alert message")
-                                                delegate:nil
-                                       cancelButtonTitle:NSLocalizedString(@"OK", @"Button title")
-                                       otherButtonTitles:nil];
-	[av show];
-	
+    [self somthingWentWrong];
 	[self.activityIndicator stopAnimating];
 }
 
@@ -111,10 +104,10 @@
 }
 
 - (void)bankerPurchaseComplete:(SKPaymentTransaction *)paymentTransaction {
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Nice one!", @"Alert view title")
-                                                 message:NSLocalizedString(@"Thanks for your support, we hope you enjoy the app.", @"Alert message")
+    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert.title.purchased-in-app-purchase", @"Install Finished")
+                                                 message:NSLocalizedString(@"alert.message.thanks", @"Thanks for your support, we hope you enjoy using our app.")
                                                 delegate:self
-                                       cancelButtonTitle:NSLocalizedString(@"OK", @"Button title")
+                                       cancelButtonTitle:NSLocalizedString(@"alert.button.ok", @"OK")
                                        otherButtonTitles:nil];
 	[av show];
     
@@ -122,13 +115,7 @@
 }
 
 - (void)bankerPurchaseFailed:(NSString *)productIdentifier withError:(NSString *)errorDescription {
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Oops!", @"Alert view title")
-                                                 message:NSLocalizedString(@"Something went wrong whilst trying to connect to the iTunes Store. Please try again.", @"Alert message")
-                                                delegate:nil
-                                       cancelButtonTitle:NSLocalizedString(@"OK", @"Button title")
-                                       otherButtonTitles:nil];
-	[av show];
-	
+    [self somthingWentWrong];
 	[self.activityIndicator stopAnimating];
 }
 
@@ -147,7 +134,15 @@
 }
 
 - (void)bankerCanNotMakePurchases {
-    // Tell user that In-App Purchase is disabled in Settings
+    // In-App Purchase are probally disabled in the Settings
+    // Tell the user
+    
+    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert.title.in-app-purchases.disabled", @"Purchases Disabled")
+                                                 message:NSLocalizedString(@"alert.message.in-app-purchases.disabled", @"Please check the restriction settings in the Settings app and then try again.")
+                                                delegate:nil
+                                       cancelButtonTitle:NSLocalizedString(@"alert.button.ok", @"OK")
+                                       otherButtonTitles:nil];
+	[av show];
 }
 
 - (void)bankerContentDownloadComplete:(SKDownload *)download {

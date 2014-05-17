@@ -1,0 +1,33 @@
+
+/* Class = "IBUITabBarItem"; title = "Options"; ObjectID = "EZd-c4-VWL"; */
+"EZd-c4-VWL.title" = "Options";
+
+/* Class = "IBUINavigationItem"; title = "Options"; ObjectID = "F7l-GX-mw5"; */
+"F7l-GX-mw5.title" = "Options";
+
+/* Class = "IBUILabel"; text = "Product description"; ObjectID = "Kv5-Tf-hEC"; */
+"Kv5-Tf-hEC.text" = "Product description";
+
+/* Class = "IBUINavigationItem"; title = "Products"; ObjectID = "TFv-xT-H9K"; */
+"TFv-xT-H9K.title" = "Products";
+
+/* Class = "IBUITabBarItem"; title = "Products"; ObjectID = "TPs-T5-kaB"; */
+"TPs-T5-kaB.title" = "Products";
+
+/* Class = "IBUIButton"; normalTitle = "Restore Purchases"; ObjectID = "ezL-nh-PDx"; */
+"ezL-nh-PDx.normalTitle" = "Restore Purchases";
+
+/* Class = "IBUIButton"; normalTitle = "Price"; ObjectID = "fH3-3C-iRA"; */
+"fH3-3C-iRA.normalTitle" = "Price";
+
+/* Class = "IBUILabel"; text = "Product title"; ObjectID = "gGj-EU-8rn"; */
+"gGj-EU-8rn.text" = "Product title";
+
+/* Class = "IBUITextView"; text = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda."; ObjectID = "uma-Ym-6xZ"; */
+"uma-Ym-6xZ.text" = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.";
+
+/* Class = "IBUILabel"; text = "Product title"; ObjectID = "uzv-92-E0l"; */
+"uzv-92-E0l.text" = "Product title";
+
+/* Class = "IBUIButton"; normalTitle = "Price"; ObjectID = "vXo-FO-iUm"; */
+"vXo-FO-iUm.normalTitle" = "Price";
