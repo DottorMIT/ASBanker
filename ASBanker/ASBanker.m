@@ -32,9 +32,9 @@ static ASBanker *sharedInstance = nil;
 }
 
 - (void)dealloc {
-	self.productsRequest.delegate = nil;
-    self.productsRequest = nil;
-	self.delegate = nil;
+	sharedInstance.productsRequest.delegate = nil;
+    sharedInstance.productsRequest = nil;
+	sharedInstance.delegate = nil;
 	
 	[[SKPaymentQueue defaultQueue] removeTransactionObserver:sharedInstance];
 }
@@ -54,12 +54,12 @@ static ASBanker *sharedInstance = nil;
         if ([self canMakePurchases]) {
             NSSet *productIdentifiersSet = [NSSet setWithArray:productIdentifiers];
             
-            self.productsRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:productIdentifiersSet];
-            self.productsRequest.delegate = self;
-            [self.productsRequest start];
+            sharedInstance.productsRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:productIdentifiersSet];
+            sharedInstance.productsRequest.delegate = self;
+            [sharedInstance.productsRequest start];
         } else {
-            if ([self.delegate respondsToSelector:@selector(bankerCanNotMakePurchases)]) {
-                [self.delegate performSelector:@selector(bankerCanNotMakePurchases)];
+            if ([sharedInstance.delegate respondsToSelector:@selector(bankerCanNotMakePurchases)]) {
+                [sharedInstance.delegate performSelector:@selector(bankerCanNotMakePurchases)];
             }
         }
     }
@@ -81,32 +81,32 @@ static ASBanker *sharedInstance = nil;
 #pragma mark - Private
 
 - (void)failedToConnect {
-	if ([self.delegate respondsToSelector:@selector(bankerFailedToConnect)]) {
-		[self.delegate performSelector:@selector(bankerFailedToConnect)];
+	if ([sharedInstance.delegate respondsToSelector:@selector(bankerFailedToConnect)]) {
+		[sharedInstance.delegate performSelector:@selector(bankerFailedToConnect)];
 	}
 }
 
 - (void)noProductsFound {
-	if ([self.delegate respondsToSelector:@selector(bankerNoProductsFound)]) {
-		[self.delegate performSelector:@selector(bankerNoProductsFound)];
+	if ([sharedInstance.delegate respondsToSelector:@selector(bankerNoProductsFound)]) {
+		[sharedInstance.delegate performSelector:@selector(bankerNoProductsFound)];
 	}
 }
 
 - (void)foundProducts:(NSArray *)products {
-	if ([self.delegate respondsToSelector:@selector(bankerFoundProducts:)]) {
-		[self.delegate performSelector:@selector(bankerFoundProducts:) withObject:products];
+	if ([sharedInstance.delegate respondsToSelector:@selector(bankerFoundProducts:)]) {
+		[sharedInstance.delegate performSelector:@selector(bankerFoundProducts:) withObject:products];
 	}
 }
 
 - (void)foundInvalidProducts:(NSArray *)products {
-	if ([self.delegate respondsToSelector:@selector(bankerFoundInvalidProducts:)]) {
-		[self.delegate performSelector:@selector(bankerFoundInvalidProducts:) withObject:products];
+	if ([sharedInstance.delegate respondsToSelector:@selector(bankerFoundInvalidProducts:)]) {
+		[sharedInstance.delegate performSelector:@selector(bankerFoundInvalidProducts:) withObject:products];
 	}
 }
 
 - (void)provideContent:(SKPaymentTransaction *)paymentTransaction {
-    if ([self.delegate respondsToSelector:@selector(bankerProvideContent:)]) {
-        [self.delegate performSelector:@selector(bankerProvideContent:) withObject:paymentTransaction];
+    if ([sharedInstance.delegate respondsToSelector:@selector(bankerProvideContent:)]) {
+        [sharedInstance.delegate performSelector:@selector(bankerProvideContent:) withObject:paymentTransaction];
 	}
 }
 
@@ -125,8 +125,8 @@ static ASBanker *sharedInstance = nil;
     [self provideContent:transaction];
     [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
     
-    if ([self.delegate respondsToSelector:@selector(bankerPurchaseComplete:)]) {
-        [self.delegate performSelector:@selector(bankerPurchaseComplete:) withObject:transaction];
+    if ([sharedInstance.delegate respondsToSelector:@selector(bankerPurchaseComplete:)]) {
+        [sharedInstance.delegate performSelector:@selector(bankerPurchaseComplete:) withObject:transaction];
     }
 }
 
@@ -135,19 +135,19 @@ static ASBanker *sharedInstance = nil;
     [self provideContent:transaction];
     [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
     
-    if ([self.delegate respondsToSelector:@selector(bankerPurchaseComplete:)]) {
-		[self.delegate performSelector:@selector(bankerPurchaseComplete:) withObject:transaction.originalTransaction];
+    if ([sharedInstance.delegate respondsToSelector:@selector(bankerPurchaseComplete:)]) {
+		[sharedInstance.delegate performSelector:@selector(bankerPurchaseComplete:) withObject:transaction.originalTransaction];
 	}
 }
 
 - (void)failedTransaction:(SKPaymentTransaction *)transaction {
 	if (transaction.error.code != SKErrorPaymentCancelled) {
-		if ([self.delegate respondsToSelector:@selector(bankerPurchaseFailed: withError:)]) {
-			[self.delegate performSelector:@selector(bankerPurchaseFailed: withError:) withObject:transaction.payment.productIdentifier withObject:[transaction.error localizedDescription]];
+		if ([sharedInstance.delegate respondsToSelector:@selector(bankerPurchaseFailed: withError:)]) {
+			[sharedInstance.delegate performSelector:@selector(bankerPurchaseFailed: withError:) withObject:transaction.payment.productIdentifier withObject:[transaction.error localizedDescription]];
 		}
     } else {
-		if ([self.delegate respondsToSelector:@selector(bankerPurchaseCancelledByUser:)]) {
-			[self.delegate performSelector:@selector(bankerPurchaseCancelledByUser:) withObject:transaction.payment.productIdentifier];
+		if ([sharedInstance.delegate respondsToSelector:@selector(bankerPurchaseCancelledByUser:)]) {
+			[sharedInstance.delegate performSelector:@selector(bankerPurchaseCancelledByUser:) withObject:transaction.payment.productIdentifier];
 		}
 	}
 	
@@ -182,8 +182,8 @@ static ASBanker *sharedInstance = nil;
     for (SKDownload *download in downloads) {
         switch (download.downloadState) {
             case SKDownloadStateActive:
-                if ([self.delegate respondsToSelector:@selector(bankerContentDownloading:)]) {
-                    [self.delegate performSelector:@selector(bankerContentDownloading:) withObject:download];
+                if ([sharedInstance.delegate respondsToSelector:@selector(bankerContentDownloading:)]) {
+                    [sharedInstance.delegate performSelector:@selector(bankerContentDownloading:) withObject:download];
                 }
                 
                 break;
@@ -192,8 +192,8 @@ static ASBanker *sharedInstance = nil;
                 // path referenced by download.contentURL. Move
                 // it somewhere safe, unpack it and give the user
                 // access to it
-                if ([self.delegate respondsToSelector:@selector(bankerContentDownloadComplete:)]) {
-                    [self.delegate performSelector:@selector(bankerContentDownloadComplete:) withObject:download];
+                if ([sharedInstance.delegate respondsToSelector:@selector(bankerContentDownloadComplete:)]) {
+                    [sharedInstance.delegate performSelector:@selector(bankerContentDownloadComplete:) withObject:download];
                 }
                 
                 [self completeTransaction:download.transaction];
@@ -233,14 +233,14 @@ static ASBanker *sharedInstance = nil;
 }
 
 - (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue {
-    if ([self.delegate respondsToSelector:@selector(bankerDidRestorePurchases)]) {
-		[self.delegate performSelector:@selector(bankerDidRestorePurchases)];
+    if ([sharedInstance.delegate respondsToSelector:@selector(bankerDidRestorePurchases)]) {
+		[sharedInstance.delegate performSelector:@selector(bankerDidRestorePurchases)];
 	}
 }
 
 - (void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error {
-    if ([self.delegate respondsToSelector:@selector(bankerFailedRestorePurchases)]) {
-		[self.delegate performSelector:@selector(bankerFailedRestorePurchases)];
+    if ([sharedInstance.delegate respondsToSelector:@selector(bankerFailedRestorePurchases)]) {
+		[sharedInstance.delegate performSelector:@selector(bankerFailedRestorePurchases)];
 	}
 }
 

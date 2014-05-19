@@ -13,15 +13,11 @@
 #import "ProductTableViewCell.h"
 #import "ProductViewController.h"
 
-@interface ProductsTableViewController () <ASBankerDelegate> {
-    
-}
+@interface ProductsTableViewController () <ASBankerDelegate>
 
 @property (strong, nonatomic) ASBanker *banker;
-
 @property (strong, nonatomic) NSArray *products;
-
-@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
+@property (strong, nonatomic) SKProduct *selectedProduct;
 
 @end
 
@@ -40,19 +36,23 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    
     self.banker = [ASBanker sharedInstance];
-	self.banker.delegate = self;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     
-#warning - These are not valid products, please change for your own
-	[self.banker fetchProducts:@[kInAppPurchseIdentifierBasicGymPack,
-                                 kInAppPurchseIdentifierProGymPack,
-                                 kInAppPurchseIdentifierMembership]];
+    if (self.banker) {
+        self.banker.delegate = self;
+    }
+    
+    if (!self.products) {
+        [self.banker fetchProducts:@[kInAppPurchseIdentifierBasicGymPack,
+                                     kInAppPurchseIdentifierProGymPack,
+                                     kInAppPurchseIdentifierMembership]];
+        
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -63,9 +63,14 @@
 #pragma mark - IBActions
 
 - (void)purchaseButtonTapped:(UIButton *)sender {
-    SKProduct *product = [self.products objectAtIndex:sender.tag];
+    self.selectedProduct = [self.products objectAtIndex:sender.tag];
     
-    [self.banker purchaseItem:product];
+    ProductTableViewCell *cell = (ProductTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:sender.tag inSection:0]];
+    [cell startAnimating];
+    
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    
+    [self.banker purchaseItem:self.selectedProduct];
 }
 
 #pragma mark - Private
@@ -77,6 +82,18 @@
                                        cancelButtonTitle:NSLocalizedString(@"alert.button.ok", @"OK")
                                        otherButtonTitles:nil];
 	[av show];
+}
+
+- (void)stopActivityIndicators {
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    
+    if (self.selectedProduct) {
+        NSUInteger idx = [self.products indexOfObjectIdenticalTo:self.selectedProduct];
+        ProductTableViewCell *cell = (ProductTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:idx inSection:0]];
+        [cell stopAnimating];
+        
+        self.selectedProduct = nil;
+    }
 }
 
 #pragma mark - Table view data source
@@ -100,7 +117,7 @@
 	
 	cell.productTitle.text = product.localizedTitle;
     cell.productDescription.text = product.localizedDescription;
-    cell.productImage.image = [UIImage imageNamed:@"DummyIcon"];
+    cell.productImage.image = [UIImage imageNamed:kImageDummyIcon];
     
 	[cell.purchaseButton setTitle:product.localizedPrice forState:UIControlStateNormal];
     
@@ -126,16 +143,16 @@
 
 - (void)bankerFailedToConnect {
     [self somthingWentWrong];
-	[self.activityIndicator stopAnimating];
+    [self stopActivityIndicators];
 }
 
 - (void)bankerNoProductsFound {
     [self somthingWentWrong];
-	[self.activityIndicator stopAnimating];
+	[self stopActivityIndicators];
 }
 
 - (void)bankerFoundProducts:(NSArray *)products {
-    [self.activityIndicator stopAnimating];
+    [self stopActivityIndicators];
     
     if (self.products) {
         self.products = nil;
@@ -148,11 +165,11 @@
 
 - (void)bankerFoundInvalidProducts:(NSArray *)products {
     [self somthingWentWrong];
-	[self.activityIndicator stopAnimating];
+	[self stopActivityIndicators];
 }
 
 - (void)bankerProvideContent:(SKPaymentTransaction *)paymentTransaction {
-    // Unlock feature or content here before for the user.
+    // Unlock feature or content here for the user.
     for (SKProduct *product in self.products) {
         if ([product.productIdentifier isEqualToString:paymentTransaction.payment.productIdentifier]) {
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -170,20 +187,20 @@
                                        otherButtonTitles:nil];
 	[av show];
     
-    [self.activityIndicator stopAnimating];
+    [self stopActivityIndicators];
 }
 
 - (void)bankerPurchaseFailed:(NSString *)productIdentifier withError:(NSString *)errorDescription {
     [self somthingWentWrong];
-	[self.activityIndicator stopAnimating];
+	[self stopActivityIndicators];
 }
 
 - (void)bankerPurchaseCancelledByUser:(NSString *)productIdentifier {
-    [self.activityIndicator stopAnimating];
+    [self stopActivityIndicators];
 }
 
 - (void)bankerFailedRestorePurchases {
-    [self.activityIndicator stopAnimating];
+    [self stopActivityIndicators];
 }
 
 // Optional
@@ -214,8 +231,8 @@
 }
 
 - (void)bankerContentDownloading:(SKDownload *)download {
-    NSLog(@"Download progress = %f", download.progress);
-    NSLog(@"Download time = %f", download.timeRemaining);
+    DLog(@"Download progress = %f", download.progress);
+    DLog(@"Download time = %f", download.timeRemaining);
 }
 
 @end

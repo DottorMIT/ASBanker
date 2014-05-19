@@ -8,8 +8,6 @@
 
 #import "Constants.h"
 
-#warning - Update the product identifiers
-
 #pragma mark - In App Purchase Products Identifiers
 
 NSString *const kInAppPurchseIdentifierBasicGymPack = @"com.awarai.fitnessplus.basicgympack";
@@ -23,3 +21,7 @@ NSString *const kProductCellIdentifier = @"ProductCell";
 #pragma mark - Storyboard Segue Identifiers
 
 NSString *const kStoryboardSegueIdentifierProduct = @"Product";
+
+#pragma mark - Images
+
+NSString *const kImageDummyIcon = @"DummyIcon";

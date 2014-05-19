@@ -30,8 +30,6 @@
 @end
 
 
-
-
 @interface ASBanker : NSObject <SKPaymentTransactionObserver, SKProductsRequestDelegate>
 
 + (ASBanker *)sharedInstance;
@@ -49,10 +47,13 @@
 
 
 @interface SKProduct (LocalizedPrice)
+
 @property (nonatomic, readonly) NSString *localizedPrice;
+
 @end
 
 @implementation SKProduct (LocalizedPrice)
+
 - (NSString *)localizedPrice {
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     [numberFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];

@@ -19,3 +19,7 @@ extern NSString *const kProductCellIdentifier;
 #pragma mark - Storyboard Segue Identifiers
 
 extern NSString *const kStoryboardSegueIdentifierProduct;
+
+#pragma mark - Images
+
+extern NSString *const kImageDummyIcon;

@@ -10,9 +10,7 @@
 
 #import "ASBanker.h"
 
-@interface OptionsTableViewController () <ASBankerDelegate> {
-    
-}
+@interface OptionsTableViewController () <ASBankerDelegate>
 
 @property (strong, nonatomic) ASBanker *banker;
 
@@ -37,7 +35,14 @@
     [super viewDidLoad];
     
     self.banker = [ASBanker sharedInstance];
-    self.banker.delegate = self;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    if (self.banker) {
+        self.banker.delegate = self;
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -56,14 +61,38 @@
 	[av show];
 }
 
+- (void)stopActivityIndicators {
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    [self.activityIndicator stopAnimating];
+    
+    [UIView animateWithDuration:0.1
+                          delay:0
+                        options:UIViewAnimationOptionCurveEaseInOut
+                     animations:^{
+                         self.restoreButton.alpha = 1.0f;
+                     }
+                     completion:^(BOOL finished) {
+                         
+                     }
+     ];
+}
+
 #pragma mark - Table View Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    [self.activityIndicator startAnimating];
-    
-	self.restoreButton.hidden = YES;
+	[UIView animateWithDuration:0.1
+                          delay:0
+                        options:UIViewAnimationOptionCurveEaseInOut
+                     animations:^{
+                         self.restoreButton.alpha = 0.0f;
+                     }
+                     completion:^(BOOL finished) {
+                         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+                         [self.activityIndicator startAnimating];
+                     }
+     ];
 	
 	[self.banker restorePurchases];
 }
@@ -74,68 +103,59 @@
 
 - (void)bankerFailedToConnect {
     [self somthingWentWrong];
-	[self.activityIndicator stopAnimating];
+	[self stopActivityIndicators];
 }
 
 - (void)bankerNoProductsFound {
     [self somthingWentWrong];
-	[self.activityIndicator stopAnimating];
+	[self stopActivityIndicators];
 }
 
 - (void)bankerFoundProducts:(NSArray *)products {
-	[self.activityIndicator stopAnimating];
-	self.restoreButton.hidden = NO;
+	[self stopActivityIndicators];
 }
 
 - (void)bankerFoundInvalidProducts:(NSArray *)products {
     [self somthingWentWrong];
-	[self.activityIndicator stopAnimating];
+	[self stopActivityIndicators];
 }
 
 - (void)bankerProvideContent:(SKPaymentTransaction *)paymentTransaction {
-    // Unlock feature or content here before for the user.
+    // Unlock feature or content here for the user.
     
-    // TODO:
-    if ([paymentTransaction.payment.productIdentifier isEqualToString:@"com.awaraistudios.testapp.upgrade"]) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        [defaults setBool:YES forKey:@"InAppPurchase"];
-        [defaults synchronize];
-    }
-    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:YES forKey:paymentTransaction.payment.productIdentifier];
+    [defaults synchronize];
 }
 
 - (void)bankerPurchaseComplete:(SKPaymentTransaction *)paymentTransaction {
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert.title.purchased-in-app-purchase", @"Install Finished")
-                                                 message:NSLocalizedString(@"alert.message.thanks", @"Thanks for your support, we hope you enjoy using our app.")
-                                                delegate:self
-                                       cancelButtonTitle:NSLocalizedString(@"alert.button.ok", @"OK")
-                                       otherButtonTitles:nil];
-	[av show];
-    
-    [self.activityIndicator stopAnimating];
-    self.restoreButton.hidden = NO;
+    [self stopActivityIndicators];
 }
 
 - (void)bankerPurchaseFailed:(NSString *)productIdentifier withError:(NSString *)errorDescription {
     [self somthingWentWrong];
-	[self.activityIndicator stopAnimating];
-	self.restoreButton.hidden = NO;
+	[self stopActivityIndicators];
 }
 
 - (void)bankerPurchaseCancelledByUser:(NSString *)productIdentifier {
-    [self.activityIndicator stopAnimating];
-	self.restoreButton.hidden = NO;
+    [self stopActivityIndicators];
 }
 
 - (void)bankerFailedRestorePurchases {
-    [self.activityIndicator stopAnimating];
-	self.restoreButton.hidden = NO;
+    [self stopActivityIndicators];
 }
 
 // Optional
 
 - (void)bankerDidRestorePurchases {
+    [self stopActivityIndicators];
     
+    UIAlertView *av = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert.title.purchases-restored", @"Purchases Restored")
+                                                 message:NSLocalizedString(@"alert.message.thanks", @"Thanks for your support, we hope you enjoy using our app.")
+                                                delegate:self
+                                       cancelButtonTitle:NSLocalizedString(@"alert.button.ok", @"OK")
+                                       otherButtonTitles:nil];
+	[av show];
 }
 
 - (void)bankerCanNotMakePurchases {
@@ -160,8 +180,8 @@
 }
 
 - (void)bankerContentDownloading:(SKDownload *)download {
-    NSLog(@"Download progress = %f", download.progress);
-    NSLog(@"Download time = %f", download.timeRemaining);
+    DLog(@"Download progress = %f", download.progress);
+    DLog(@"Download time = %f", download.timeRemaining);
 }
 
 @end

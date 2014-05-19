@@ -1,9 +1,8 @@
-
 /* Class = "IBUITabBarItem"; title = "Options"; ObjectID = "EZd-c4-VWL"; */
-"EZd-c4-VWL.title" = "Options";
+"EZd-c4-VWL.title" = "Purchases";
 
 /* Class = "IBUINavigationItem"; title = "Options"; ObjectID = "F7l-GX-mw5"; */
-"F7l-GX-mw5.title" = "Options";
+"F7l-GX-mw5.title" = "Purchases";
 
 /* Class = "IBUILabel"; text = "Product description"; ObjectID = "Kv5-Tf-hEC"; */
 "Kv5-Tf-hEC.text" = "Product description";
@@ -31,3 +30,4 @@
 
 /* Class = "IBUIButton"; normalTitle = "Price"; ObjectID = "vXo-FO-iUm"; */
 "vXo-FO-iUm.normalTitle" = "Price";
+

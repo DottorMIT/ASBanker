@@ -16,4 +16,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *purchaseButton;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 
+- (void)startAnimating;
+- (void)stopAnimating;
+
 @end

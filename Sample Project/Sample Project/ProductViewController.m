@@ -10,9 +10,7 @@
 
 #import "Constants.h"
 
-@interface ProductViewController () <ASBankerDelegate> {
-    
-}
+@interface ProductViewController () <ASBankerDelegate>
 
 @property (strong, nonatomic) ASBanker *banker;
 
@@ -42,11 +40,18 @@
     
     self.productTitle.text = self.product.localizedTitle;
     self.productDescription.text = self.product.localizedDescription;
-    self.productImage.image = [UIImage imageNamed:@"DummyIcon"];
+    self.productImage.image = [UIImage imageNamed:kImageDummyIcon];
     [self.purchaseButton setTitle:self.product.localizedPrice forState:UIControlStateNormal];
     
     self.banker = [ASBanker sharedInstance];
-	self.banker.delegate = self;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    if (self.banker) {
+        self.banker.delegate = self;
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -57,6 +62,18 @@
 #pragma mark - IBActions
 
 - (IBAction)purchaseButtonTapped:(id)sender {
+    [UIView animateWithDuration:0.1
+                          delay:0
+                        options:UIViewAnimationOptionCurveEaseInOut
+                     animations:^{
+                         self.purchaseButton.alpha = 0.0f;
+                     }
+                     completion:^(BOOL finished) {
+                         [self.activityIndicator startAnimating];
+                         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+                     }
+     ];
+    
     [self.banker purchaseItem:self.product];
 }
 
@@ -71,31 +88,47 @@
 	[av show];
 }
 
+- (void)stopActivityIndicators {
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    [self.activityIndicator stopAnimating];
+    
+    [UIView animateWithDuration:0.1
+                          delay:0
+                        options:UIViewAnimationOptionCurveEaseInOut
+                     animations:^{
+                         self.purchaseButton.alpha = 1.0f;
+                     }
+                     completion:^(BOOL finished) {
+                         
+                     }
+     ];
+}
+
 #pragma mark - ASBankerDelegate
 
 // Required
 
 - (void)bankerFailedToConnect {
     [self somthingWentWrong];
-	[self.activityIndicator stopAnimating];
+	[self stopActivityIndicators];
 }
 
 - (void)bankerNoProductsFound {
     [self somthingWentWrong];
-	[self.activityIndicator stopAnimating];
+	[self stopActivityIndicators];
 }
 
 - (void)bankerFoundProducts:(NSArray *)products {
-    [self.activityIndicator stopAnimating];
+    [self stopActivityIndicators];
 }
 
 - (void)bankerFoundInvalidProducts:(NSArray *)products {
     [self somthingWentWrong];
-	[self.activityIndicator stopAnimating];
+	[self stopActivityIndicators];
 }
 
 - (void)bankerProvideContent:(SKPaymentTransaction *)paymentTransaction {
-    // Unlock feature or content here before for the user.
+    // Unlock feature or content here for the user.
     if ([paymentTransaction.payment.productIdentifier isEqualToString:self.product.productIdentifier]) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults setBool:YES forKey:self.product.productIdentifier];
@@ -111,20 +144,20 @@
                                        otherButtonTitles:nil];
 	[av show];
     
-    [self.activityIndicator stopAnimating];
+    [self stopActivityIndicators];
 }
 
 - (void)bankerPurchaseFailed:(NSString *)productIdentifier withError:(NSString *)errorDescription {
     [self somthingWentWrong];
-	[self.activityIndicator stopAnimating];
+	[self stopActivityIndicators];
 }
 
 - (void)bankerPurchaseCancelledByUser:(NSString *)productIdentifier {
-    [self.activityIndicator stopAnimating];
+    [self stopActivityIndicators];
 }
 
 - (void)bankerFailedRestorePurchases {
-    [self.activityIndicator stopAnimating];
+    [self stopActivityIndicators];
 }
 
 // Optional
@@ -155,8 +188,8 @@
 }
 
 - (void)bankerContentDownloading:(SKDownload *)download {
-    NSLog(@"Download progress = %f", download.progress);
-    NSLog(@"Download time = %f", download.timeRemaining);
+    DLog(@"Download progress = %f", download.progress);
+    DLog(@"Download time = %f", download.timeRemaining);
 }
 
 @end

@@ -64,9 +64,14 @@
                                             <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="Dni-sV-ZuJ">
+                                            <rect key="frame" x="260" y="30" width="20" height="20"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        </activityIndicatorView>
                                     </subviews>
                                 </tableViewCellContentView>
                                 <connections>
+                                    <outlet property="activityIndicator" destination="Dni-sV-ZuJ" id="Mxt-Nh-KNZ"/>
                                     <outlet property="productDescription" destination="Kv5-Tf-hEC" id="5Ny-sd-nXw"/>
                                     <outlet property="productImage" destination="NU4-Eb-K95" id="dDl-kO-2vY"/>
                                     <outlet property="productTitle" destination="gGj-EU-8rn" id="Mhl-ho-9FC"/>
@@ -147,7 +152,7 @@
             </objects>
             <point key="canvasLocation" x="1156" y="53"/>
         </scene>
-        <!--Options Table View Controller - Options-->
+        <!--Options Table View Controller - Purchases-->
         <scene sceneID="q2r-9Q-St3">
             <objects>
                 <tableViewController id="aaN-Nw-3ki" customClass="OptionsTableViewController" sceneMemberID="viewController">
@@ -187,7 +192,7 @@
                             <outlet property="delegate" destination="aaN-Nw-3ki" id="hHp-Bm-XS8"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Options" id="F7l-GX-mw5"/>
+                    <navigationItem key="navigationItem" title="Purchases" id="F7l-GX-mw5"/>
                     <connections>
                         <outlet property="activityIndicator" destination="2bj-SE-qw7" id="a3v-tA-3sm"/>
                         <outlet property="restoreButton" destination="ezL-nh-PDx" id="822-be-AyU"/>
@@ -197,11 +202,11 @@
             </objects>
             <point key="canvasLocation" x="723" y="889"/>
         </scene>
-        <!--Navigation Controller - Options-->
+        <!--Navigation Controller - Purchases-->
         <scene sceneID="Dbo-kk-GGS">
             <objects>
                 <navigationController definesPresentationContext="YES" id="RRe-3K-yam" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Options" id="EZd-c4-VWL"/>
+                    <tabBarItem key="tabBarItem" title="Purchases" image="Purchased" id="EZd-c4-VWL"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="cpj-3W-dFq">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -217,7 +222,7 @@
         <scene sceneID="Tej-nq-T8D">
             <objects>
                 <navigationController definesPresentationContext="YES" id="vTh-k9-wKr" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Products" id="TPs-T5-kaB"/>
+                    <tabBarItem key="tabBarItem" title="Products" image="Tag" id="TPs-T5-kaB"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="uH7-XN-9dB">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -230,6 +235,10 @@
             <point key="canvasLocation" x="191" y="53"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="Purchased" width="23" height="31"/>
+        <image name="Tag" width="28" height="28"/>
+    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
