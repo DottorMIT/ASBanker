@@ -52,6 +52,20 @@ To run the Sample Project with your own In App Purchases you'll need to change a
 2.  Chnage the Product Identifiers to your own. In the Sample Project these are in Constants.m and used in ProductTableViewController.m.
 ![](/Images/Product-Identifiers.png?raw=true "")
 
+Version History
+-------
+
+**Version 2.x.x**
+
+1. Supports iOS 7 plus.
+2. Supports Consumable, Non-Consumable, Auto-Renewable Subscriptions, Free Subscriptions, Non-Renewing Subscriptions and Apple Hosted Content.
+
+**Version 1.x.x**
+
+1. Supports iOS 6 plus.
+2. Supports Consumable and Non-Consumable only.
+
+
 Licence
 -------
 
