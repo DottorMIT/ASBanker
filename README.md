@@ -49,9 +49,9 @@ To run the Sample Project with your own In App Purchases you'll need to change a
 1.  Set the Bundle Identifier and the Team for the project in Xcode. Image 1
 2.  Chnage the Product Identifiers to your own. In the Sample Project these are in Constants.m and used in ProductTableViewController.m. Image 2
 
-![](/relative/path/to/img.jpg?raw=true "Image 1")
+![](/Images/Bundle-Identifier.png?raw=true "Image 1")
 
-![](/relative/path/to/img.jpg?raw=true "Image 2")
+![](/Images/Product-Identifiers.png?raw=true "Image 2")
 
 Licence
 -------
