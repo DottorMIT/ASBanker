@@ -39,17 +39,17 @@ If you're unfamiliar with CocoaPods there is a great tutorial [here](http://www.
 
 **Running the sample project**
 
-Check out the [sample project](https://github.com/AwaraiStudios/ASBanker/tree/master/Sample%20Project) included in the repository. Open the '.xcodeproj' file in the Sample Project folder and the project should build correctly.
+Check out the [sample project](https://github.com/AwaraiStudios/ASBanker/tree/master/Sample%20Project) included in the repository. Open the '.xcodeproj' file in the sample project folder and the project should build correctly.
 
 Configuration
 ========
 
-To run the Sample Project with your own In App Purchases you'll need to change a few things:
+To run the sample project with your own In App Purchases you'll need to change a few things:
 
 1.  Set the Bundle Identifier and the Team for the project in Xcode.
 ![](/Images/Bundle-Identifier.png?raw=true "")
 
-2.  Chnage the Product Identifiers to your own. In the Sample Project these are in Constants.m and used in ProductTableViewController.m.
+2.  Chnage the Product Identifiers to your own. In the sample project these are in Constants.m and used in ProductTableViewController.m.
 ![](/Images/Product-Identifiers.png?raw=true "")
 
 Version History
@@ -69,7 +69,7 @@ Version History
 Licence
 -------
 
-Distributed under the MIT License.
+Distributed under the [MIT License](http://opensource.org/licenses/MIT).
 
 Credits
 -------
