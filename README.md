@@ -55,12 +55,20 @@ To run the sample project with your own In App Purchases you'll need to change a
 Version History
 -------
 
-**Version 2.x.x**
+**Version 2.0.0**
 
 1. Supports iOS 7 plus.
 2. Supports Consumable, Non-Consumable, Auto-Renewable Subscriptions, Free Subscriptions, Non-Renewing Subscriptions and Apple Hosted Content.
 
-**Version 1.x.x**
+**Version 1.1.1**
+
+1. Bug fixes.
+
+**Version 1.1.0**
+
+1. Bug fixes.
+
+**Version 1.0.0**
 
 1. Supports iOS 6 plus.
 2. Supports Consumable and Non-Consumable only.
