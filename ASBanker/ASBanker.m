@@ -211,7 +211,7 @@ static ASBanker *sharedInstance = nil;
                 break;
 				
             case SKPaymentTransactionStatePurchased:
-                if (transaction.downloads) {
+                if (transaction.downloads.count) {
                     [[SKPaymentQueue defaultQueue] startDownloads:transaction.downloads];
                 } else {
                     [self completeTransaction:transaction];
