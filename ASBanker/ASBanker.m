@@ -114,8 +114,11 @@ static ASBanker *sharedInstance = nil;
 
 - (void)recordTransaction:(SKPaymentTransaction *)transaction {
     NSData *transactionReceipt = [NSData dataWithContentsOfURL:[[NSBundle mainBundle] appStoreReceiptURL]];
+    NSLog(@"%@",transactionReceipt);
     NSString *transactionReceiptString = [[NSString alloc] initWithData:transactionReceipt encoding:NSASCIIStringEncoding];
+    NSLog(@"%@",transactionReceiptString);
     
+    //bug is here
 	[[NSUserDefaults standardUserDefaults] setValue:transactionReceiptString forKey:transaction.payment.productIdentifier];
 	[[NSUserDefaults standardUserDefaults] synchronize];
 }
@@ -206,23 +209,31 @@ static ASBanker *sharedInstance = nil;
 
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions {
     for (SKPaymentTransaction *transaction in transactions) {
+        NSLog(@"Payment Queue");
         switch (transaction.transactionState) {
             case SKPaymentTransactionStatePurchasing:
+                NSLog(@"Trying To Purchase");
                 break;
 				
             case SKPaymentTransactionStatePurchased:
+                NSLog(@"Product Purchased");
+                //bug is here
                 if (transaction.downloads.count) {
+                    NSLog(@"Downloading product");
                     [[SKPaymentQueue defaultQueue] startDownloads:transaction.downloads];
                 } else {
+                    NSLog(@"Product Unlocked");
                     [self completeTransaction:transaction];
                 }
                 break;
 				
             case SKPaymentTransactionStateFailed:
+                NSLog(@"Payment not finished");
                 [self failedTransaction:transaction];
                 break;
 				
             case SKPaymentTransactionStateRestored:
+                NSLog(@"Purchase restored");
                 [self restoreTransaction:transaction];
                 break;
 				
@@ -231,6 +242,7 @@ static ASBanker *sharedInstance = nil;
         }
     }
 }
+
 
 - (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue {
     if ([sharedInstance.delegate respondsToSelector:@selector(bankerDidRestorePurchases)]) {
