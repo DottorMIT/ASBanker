@@ -75,6 +75,7 @@ static ASBanker *sharedInstance = nil;
 }
 
 - (void)restorePurchases {
+    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
     [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
 }
 
